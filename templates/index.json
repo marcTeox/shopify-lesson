@@ -1,0 +1,85 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "rich_text_z7aWFe": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_T4VCwT": {
+          "type": "heading",
+          "settings": {
+            "heading": "<strong>Hi I'm Marc</strong>",
+            "heading_size": "h1"
+          }
+        },
+        "caption_gHiAeA": {
+          "type": "caption",
+          "settings": {
+            "caption": "Shopify & Front End Developer",
+            "text_style": "caption-with-letter-spacing",
+            "text_size": "medium"
+          }
+        },
+        "text_nyDibC": {
+          "type": "text",
+          "settings": {
+            "text": "<h1></h1><p></p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_T4VCwT",
+        "caption_gHiAeA",
+        "text_nyDibC"
+      ],
+      "name": "t:sections.rich-text.presets.name",
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "all",
+        "products_to_show": 8,
+        "title": "Featured products",
+        "heading_size": "h2",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "columns_desktop": 4,
+        "enable_desktop_slider": false,
+        "full_width": false,
+        "show_view_all": true,
+        "view_all_style": "solid",
+        "color_scheme": "scheme-1",
+        "image_ratio": "adapt",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "quick_add": "none",
+        "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "padding_top": 44,
+        "padding_bottom": 36
+      }
+    }
+  },
+  "order": [
+    "rich_text_z7aWFe",
+    "featured_collection"
+  ]
+}
