@@ -1,3 +1,19 @@
+<style>
+  .basic-render{
+    margin-top: 2rem;
+    display: flex;
+    gap: 2rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    heigh: 100%;
+  }
+</style>
+ <div class="basic-render">
+  <button data-render class="button">Render</button>
+</div>
+<script src="{{ 'section-render-btn.js' | asset_url }}" defer></script>
 {% schema %}
   {
     "name": "Section Render BTN",
