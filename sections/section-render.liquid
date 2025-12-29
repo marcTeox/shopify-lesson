@@ -1,0 +1,130 @@
+<section id="section-{{ section.id }}" class="section-render-header section-header {{ section.settings.alignment }}" role="banner" aria-label="{{ section.settings.title | escape }}">
+  <div class="section-inner">
+    <div class="hero-content">
+      {% assign title_tag = section.settings.title_tag | default: 'h1' %}
+      {% if section.settings.title != blank %}
+        {{ "<" | append: title_tag | append: " class='hero-title'>" }}{{ section.settings.title }}{{ "</" | append: title_tag | append: ">" }}
+      {% endif %}
+
+      {% if section.settings.description != blank %}
+        <p class="hero-desc">{{ section.settings.description }}</p>
+      {% endif %}
+
+      {% if section.settings.button_text != blank and section.settings.button_link != blank %}
+        <a href="{{ section.settings.button_link }}" class="hero-btn" {% if section.settings.button_target_blank %}target="_blank" rel="noopener noreferrer"{% endif %}>
+          {{ section.settings.button_text }}
+        </a>
+      {% endif %}
+    </div>
+
+    {% if section.settings.show_decorative_blob %}
+      <div class="decorative-blob" aria-hidden="true"></div>
+    {% endif %}
+  </div>
+
+  <style>
+    /* Basic responsive hero + small "fancy" touches for section-render tests */
+    #section-{{ section.id }} { padding: 48px 16px; background: linear-gradient(135deg, #0f172a 0%, #0ea5a4 50%, #7c3aed 100%); color: #fff; overflow: hidden; }
+    #section-{{ section.id }} .section-inner { max-width: 1100px; margin: 0 auto; text-align: center; position: relative; }
+    #section-{{ section.id }} .hero-title { font-weight: 700; margin: 0 0 12px; font-size: 2.2rem; letter-spacing: -0.02em; }
+    #section-{{ section.id }} .hero-desc { margin: 0 0 18px; color: rgba(255,255,255,0.9); max-width: 800px; margin-left: auto; margin-right: auto; line-height: 1.4; }
+    #section-{{ section.id }} .hero-btn { display: inline-block; padding: 12px 20px; border-radius: 999px; background: rgba(255,255,255,0.12); color: #fff; text-decoration: none; font-weight: 600; transition: transform .18s ease, box-shadow .18s ease; box-shadow: 0 6px 20px rgba(12,18,30,0.3); }
+    #section-{{ section.id }} .hero-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(12,18,30,0.35); background: rgba(255,255,255,0.18); }
+
+    /* Decorative blob */
+    #section-{{ section.id }} .decorative-blob { position: absolute; right: -8%; top: -12%; width: 48vmin; height: 48vmin; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08), rgba(255,255,255,0.02) 40%, transparent 60%); filter: blur(40px); transform: rotate(12deg); pointer-events: none; }
+
+    /* Alignments */
+    #section-{{ section.id }}.left .section-inner { text-align: left; }
+    #section-{{ section.id }}.right .section-inner { text-align: right; }
+
+    /* Responsive */
+    @media (min-width: 800px){
+      #section-{{ section.id }} .hero-title { font-size: 3.2rem; }
+      #section-{{ section.id }} { padding: 72px 16px; }
+    }
+  </style>
+
+  <script>
+    // Minimal entrance animation for testing
+    (function(){ var root = document.getElementById('section-{{ section.id }}'); if(!root) return;
+      root.querySelectorAll('.hero-title, .hero-desc, .hero-btn').forEach(function(el,i){
+        el.style.opacity = 0;
+        el.style.transform = 'translateY(8px)';
+        setTimeout(function(){ el.style.transition = 'opacity .45s ease, transform .45s ease'; el.style.opacity = 1; el.style.transform = 'none'; }, 120 + i*110);
+      });
+    })();
+  </script>
+
+  {% schema %}
+  {
+    "name": "Section Render Header",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Section Render Title — use this to test the Section Rendering API"
+      },
+      {
+        "type": "select",
+        "id": "title_tag",
+        "label": "Title tag",
+        "default": "h1",
+        "options": [
+          { "value": "h1", "label": "H1" },
+          { "value": "h2", "label": "H2" },
+          { "value": "h3", "label": "H3" }
+        ]
+      },
+      {
+        "type": "textarea",
+        "id": "description",
+        "label": "Description",
+        "default": "A small description for your header section. This section is intentionally simple and useful for API/render testing."
+      },
+      {
+        "type": "select",
+        "id": "alignment",
+        "label": "Text alignment",
+        "default": "center",
+        "options": [
+          { "value": "left", "label": "Left" },
+          { "value": "center", "label": "Center" },
+          { "value": "right", "label": "Right" }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "button_text",
+        "label": "Button text",
+        "default": "Learn more"
+      },
+      {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button link"
+      },
+      {
+        "type": "checkbox",
+        "id": "button_target_blank",
+        "label": "Open button in new tab",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "show_decorative_blob",
+        "label": "Show decorative blob",
+        "default": true
+      }
+    ],
+    "presets": [
+      {
+        "name": "Section Render Header",
+        "category": "Header",
+        "blocks": []
+      }
+    ]
+  }
+  {% endschema %}
+</section>
