@@ -1,0 +1,78 @@
+
+<script src="{{ 'pagination.js' | asset_url }}" defer></script>
+{% if section.settings.collection %}
+  {% assign collection = section.settings.collection %}
+  
+  <section id="{{ section.id }}">
+    <div>
+      <h1>{{ collection.title }}</h1>
+      <p>{{ collection.description }}</p>
+    </div>
+    <div data-collection-main>
+      <div data-collection-list>
+      {% paginate collection.products by 2 %}
+        {% for product in collection.products %}
+          <article class="product-card">
+            <a href="{{ product.url }}" class="product-card__image">
+              {% if product.featured_image %}
+                <img src="{{ product.featured_image | img_url: '480x480' }}" alt="{{ product.featured_image.alt | escape }}">
+              {% else %}
+                <img src="{{ 'no-image.svg' | asset_url }}" alt="No image available">
+              {% endif %}
+            </a>
+
+            <div class="product-card__details">
+              <h2 class="product-card__title">
+                <a href="{{ product.url }}">{{ product.title }}</a>
+              </h2>
+
+              <p class="product-card__description">
+                {{ product.description | strip_html | truncate: 120 }}
+              </p>
+
+              <div class="product-card__price">
+                {% if product.price_varies %}
+                  From {{ product.price_min | money }}
+                {% else %}
+                  {{ product.price | money }}
+                {% endif %}
+              </div>
+
+              <form method="post" action="/cart/add" class="product-card__buy">
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="btn">Buy</button>
+              </form>
+            </div>
+          </article>
+        {% endfor %}
+        <pagination-component data-section-id={{ section.id }}>
+        {{- paginate | default_pagination -}}
+        </pagination-component>
+      {% endpaginate %}
+      </div>
+    </div>
+    
+  </section>
+  
+{% endif %}
+  
+
+
+{% schema %}
+  {
+    "name": "Section Pagination",
+    "settings": [
+      {
+        "type": "collection",
+        "id": "collection",
+        "label": "Please Select Collection"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Collection Pagination"
+      }
+    ]
+  }
+{% endschema %}
