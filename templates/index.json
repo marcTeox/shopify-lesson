@@ -81,11 +81,19 @@
       "type": "section-render-btn",
       "name": "Section Render BTN",
       "settings": {}
+    },
+    "section_pagination_PPb6DG": {
+      "type": "section-pagination",
+      "name": "Collection Pagination",
+      "settings": {
+        "collection": "all-product"
+      }
     }
   },
   "order": [
     "rich_text_z7aWFe",
     "featured_collection",
-    "section_render_btn_jgVKiH"
+    "section_render_btn_jgVKiH",
+    "section_pagination_PPb6DG"
   ]
 }
