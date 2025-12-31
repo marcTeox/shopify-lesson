@@ -1,17 +1,23 @@
 
-<script src="{{ 'pagination-component-v1.js' | asset_url }}" defer></script>
-{% if section.settings.collection %}
-  {% assign collection = section.settings.collection %}
+{{ 'section-pagination.css' | asset_url | stylesheet_tag }}
+{% assign active_collection = collection | default: section.settings.collection %}
+
   
   <section id="{{ section.id }}">
     <div>
-      <h1>{{ collection.title }}</h1>
-      <p>{{ collection.description }}</p>
+      <h1>{{ active_collection.title }}</h1>
+      <p>{{ active_collection.description }}</p>
     </div>
+    <form>
+      {%- for filter in active_collection.filters -%}
+        <p>{{ filter }}</p>
+      {%- endfor -%}
+    </form>
     <div data-collection-main>
       <div data-collection-list>
-      {% paginate collection.products by 2 %}
-        {% for product in collection.products %}
+      {% paginate active_collection.products by 6 %}
+        <div class="card-dev">
+        {% for product in active_collection.products %}
           <article class="product-card">
             <a href="{{ product.url }}" class="product-card__image">
               {% if product.featured_image %}
@@ -46,6 +52,7 @@
             </div>
           </article>
         {% endfor %}
+        </div>
         <pagination-componentv1 data-section-id={{ section.id }}>
           {{- paginate | default_pagination -}}
         </pagination-componentv1>
@@ -54,11 +61,8 @@
     </div>
     
   </section>
-  
-{% endif %}
-  
 
-
+<script src="{{ 'pagination-component-v1.js' | asset_url }}" defer></script>
 {% schema %}
   {
     "name": "Section Pagination",
