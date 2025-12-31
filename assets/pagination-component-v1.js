@@ -25,6 +25,9 @@ class PaginationComponentV1 extends HTMLElement {
         const paginationData = tempDiv.querySelector("[data-collection-list]");
         document.querySelector("[data-collection-main]").innerHTML =
           paginationData.innerHTML;
+        url.searchParams.delete("sections");
+        console.log(url.href);
+        window.history.pushState({}, "", url);
       });
   }
 }
