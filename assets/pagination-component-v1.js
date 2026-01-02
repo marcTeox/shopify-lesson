@@ -22,7 +22,7 @@ class PaginationComponentV1 extends HTMLElement {
       .then((data) => {
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = data[this.sectionId];
-        const paginationData = tempDiv.querySelector("[data-collection-list]");
+        const paginationData = tempDiv.querySelector("[data-collection-main]");
         document.querySelector("[data-collection-main]").innerHTML =
           paginationData.innerHTML;
         url.searchParams.delete("sections");

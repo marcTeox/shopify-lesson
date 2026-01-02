@@ -8,13 +8,76 @@
       <h1>{{ active_collection.title }}</h1>
       <p>{{ active_collection.description }}</p>
     </div>
-    <form>
-      {%- for filter in active_collection.filters -%}
-        <p>{{ filter }}</p>
-      {%- endfor -%}
-    </form>
+    <div class="collection-filter__header">
+      <h2>Filters</h2>
+    </div>
+    <div class="collection-body" data-collection-body>
+    <div class="collection-filter__content">
+      {% for filter in collection.filters %}
+      <p>This all the types: {{ filter.type }}</p>
+        <div class="collection-filter">
+          <h3>{{ filter.label }}</h3>
+          {% if filter.type == 'list' %}
+            <collection-filter data-section-id="{{ section.id }}" data-filter-param="{{ filter.param }}">
+              <div class="collection_filter__options">
+              {%  for option in filter.values %}
+                <input
+                  type="checkbox"
+                  id="filter-id-{{ option.label }}"
+                  name="filter-{{ filter.label | handle }}[]"
+                  value="{{ option.value | handle }}"
+                  data-add-url="{{ option.url_to_add }}"
+                  data-remove-url="{{ option.url_to_remove }}"
+                  {% if option.active %}checked{% endif %}>
+                  <label for="filter-id-{{ option.label }}">
+                    {{ option.label }} ({{ option.count }})
+                  </label>
+              {% endfor %}
+              </div>
+            </collection-filter>
+          {%  endif %}
+
+          {%  if filter.type == 'price_range' %}
+            <div className="filter-group-display__price-range">
+              <div className="filter-group-display__price-range-from">
+                <span>{{ cart.currency.symbol }}</span>
+
+                <input name="{{ filter.min_value.param_name }}"
+                  id="Filter-{{ filter.min_value.param_name }}"
+                  {% if filter.min_value.value -%}
+                    value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                  {%- endif %}
+                  type="number"
+                  placeholder="0"
+                  min="0"
+                  max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                 />
+
+                <label for="Filter-{{ filter.min_value.param_name }}">From</label>
+              </div>
+              <div className="filter-group-display__price-range-to">
+                <span>{{ cart.currency.symbol }}</span>
+
+                <input name="{{ filter.max_value.param_name }}"
+                  id="Filter-{{ filter.max_value.param_name }}"
+                  {% if filter.max_value.value -%}
+                    value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                  {%- endif %}
+                  type="number"
+                  placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                  min="0"
+                  max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                 />
+
+                <label for="Filter-{{ filter.max_value.param_name }}">To</label>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  
     <div data-collection-main>
-      <div data-collection-list>
       {% paginate active_collection.products by 6 %}
         <div class="card-dev">
         {% for product in active_collection.products %}
@@ -57,12 +120,13 @@
           {{- paginate | default_pagination -}}
         </pagination-componentv1>
       {% endpaginate %}
-      </div>
+    </div>
     </div>
     
   </section>
 
 <script src="{{ 'pagination-component-v1.js' | asset_url }}" defer></script>
+<script src="{{ 'collection-filters.js' | asset_url }}" defer></script>
 {% schema %}
   {
     "name": "Section Pagination",
