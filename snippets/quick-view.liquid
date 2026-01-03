@@ -1,0 +1,118 @@
+{{ 'section-pagination.css' | asset_url | stylesheet_tag }}
+  {% comment %}
+  Quick View modal content for a product.
+  If this snippet is included with a 'product' variable it will render immediately.
+  If no product is provided, it shows a loader and expects JS to fetch product JSON by reading data-product-handle on the quick-view-modal element.
+  {% endcomment %}
+  {% if product %}
+    <div class="quick-view__inner" role="dialog" aria-modal="true" aria-labelledby="quick-view-title-{{ product.id }}">
+      <button type="button" class="quick-view__close" aria-label="Close quick view">×</button>
+
+      <div class="quick-view__media">
+        <div class="quick-view__gallery">
+          {% assign first_image = product.featured_image | default: product.images.first %}
+          {% if first_image %}
+            <div class="quick-view__main-image">
+              <img src="{{ first_image | image_url }}" height="" width="" alt="{{ first_image.alt | escape }}" loading="lazy">
+            </div>
+          {% endif %}
+
+          {% if product.images.size > 1 %}
+            <div class="quick-view__thumbnails">
+              {% for image in product.images  %}
+                <button type="button" class="quick-view__thumb" data-image-src="{{ image | img_url: 'master' }}" aria-label="View image {{ forloop.index }}">
+                  <img src="{{ image | image_url: '180x' }}" height="" width="" alt="{{ image.alt | escape }}" loading="lazy">
+                </button>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="quick-view__details">
+        <h2 id="quick-view-title-{{ product.id }}" class="quick-view__title">{{ product.title }}</h2>
+        {% if product.vendor %}<div class="quick-view__vendor">{{ product.vendor }}</div>{% endif %}
+        {% if product.available == false %}
+          <div class="quick-view__sold-out">Sold out</div>
+        {% endif %}
+
+        <div class="quick-view__price">
+          {% if product.price_varies %}
+            <span class="quick-view__from">From</span>
+          {% endif %}
+          <span class="quick-view__current-price">{{ product.price | money }}</span>
+          {% if product.compare_at_price_max > product.price %}
+            <span class="quick-view__compare">{{ product.compare_at_price_max | money }}</span>
+          {% endif %}
+        </div>
+
+        {% if product.tags.size > 0 %}
+          <div class="quick-view__tags">
+            {% for tag in product.tags  %}
+              <span class="tag">{{ tag }}</span>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div class="quick-view__form">
+          <form method="post" action="{{ routes.cart_add_url }}" id="quick-view-form-{{ product.id }}">
+            <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
+
+            {% if product.variants.size > 1 %}
+              <label for="quick-view-variant-{{ product.id }}">Options</label>
+              <select name="id" id="quick-view-variant-{{ product.id }}">
+                {% for variant in product.variants %}
+                  <option value="{{ variant.id }}" {% if variant.available == false %}disabled{% endif %}>
+                    {{ variant.title }}{% if variant.available == false %} — Sold out{% endif %}
+                  </option>
+                {% endfor %}
+              </select>
+            {% endif %}
+
+            <div class="quick-view__quantity">
+              <label for="quick-view-qty-{{ product.id }}">Qty</label>
+              <input id="quick-view-qty-{{ product.id }}" name="quantity" type="number" min="1" value="1">
+            </div>
+
+            <button type="submit" class="quick-view__add-to-cart" {% if product.available == false %}disabled{% endif %}>
+              {% if product.available %}Add to cart{% else %}Unavailable{% endif %}
+            </button>
+          </form>
+
+          {% if product.description != blank %}
+            <div class="quick-view__description">
+              {{ product.description | strip_html | truncatewords: 40 }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function(){
+        var modal = document.currentScript.parentElement;
+        // thumbnail click => swap main image
+        modal.querySelectorAll('.quick-view__thumb').forEach(function(btn){
+          btn.addEventListener('click', function(){
+            var src = this.getAttribute('data-image-src');
+            var main = modal.querySelector('.quick-view__main-image img');
+            if(main && src) main.src = src;
+          });
+        });
+
+        // simple close handler
+        modal.querySelectorAll('.quick-view__close').forEach(function(btn){
+          btn.addEventListener('click', function(){
+            var evt = new CustomEvent('quickView:close', { bubbles: true });
+            modal.dispatchEvent(evt);
+          });
+        });
+      })();
+    </script>
+  {% else %}
+    <div class="quick-view__inner quick-view__loading">
+      <button type="button" class="quick-view__close" aria-label="Close quick view">×</button>
+      <div class="quick-view__loader">Loading product…</div>
+      <div class="quick-view__hint">This quick view expects either a Liquid 'product' variable when included, or client-side JS to fetch product JSON by handle.</div>
+    </div>
+  {% endif %}

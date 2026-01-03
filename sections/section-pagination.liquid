@@ -78,7 +78,7 @@
     </div>
   
     <div data-collection-main>
-      {% paginate active_collection.products by 6 %}
+      {% paginate active_collection.products by 4 %}
         <div class="card-dev">
         {% for product in active_collection.products %}
           <article class="product-card">
@@ -111,7 +111,9 @@
                 <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
                 <input type="hidden" name="quantity" value="1">
                 <button type="submit" class="btn">Buy</button>
+                <button type="button" class="quick-view" data-quick-view data-product-handle="{{ product.handle }}" data-product="{{ product.id }}" data-product-url="{{ product.url }}">Quick View</button>
               </form>
+              
             </div>
           </article>
         {% endfor %}
@@ -122,11 +124,14 @@
       {% endpaginate %}
     </div>
     </div>
-    
+    <quick-view>
+        {% render 'quick-view-v1' product: product %}
+    </quick-view>
   </section>
 
 <script src="{{ 'pagination-component-v1.js' | asset_url }}" defer></script>
 <script src="{{ 'collection-filters.js' | asset_url }}" defer></script>
+<script src="{{ 'quick-view.js' | asset_url }}" defer></script>
 {% schema %}
   {
     "name": "Section Pagination",
