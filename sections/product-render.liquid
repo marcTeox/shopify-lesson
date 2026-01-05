@@ -1,0 +1,85 @@
+<product-info
+  id="ProductRender-{{ section.id }}"
+  class="section-{{ section.id }}-padding product-render"
+  data-section="{{ section.id }}"
+  data-product-id="{{ product.id }}"
+  data-url="{{ product.url }}"
+>
+  {%- comment -%}
+    A lightweight product section intended for use with the Rendering API.
+    It renders the essential parts of the product (media, title, price, variant picker, add to cart)
+    and is suitable to be returned from a product endpoint when queried with
+    ?section_id=product-render
+  {%- endcomment -%}
+
+  {{ 'section-main-product.css' | asset_url | stylesheet_tag }}
+  {{ 'component-price.css' | asset_url | stylesheet_tag }}
+  {{ 'component-deferred-media.css' | asset_url | stylesheet_tag }}
+   
+
+  <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+  <div class="page-width">
+    <div class="product product--simple product-render__inner grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% endif %}">
+      <div class="grid__item product-render__media product__media-wrapper">
+        {%- assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' -%}
+        {% render 'product-media-gallery', variant_images: variant_images %}
+      </div>
+      <div class="product-render__info product__info-wrapper grid__item">
+        <section id="ProductInfo-{{ section.id }}" class="product__info-container product-render__info-container">
+          <div class="product__title">
+            <h1>{{ product.title | escape }}</h1>
+          </div>
+
+          <div id="price-{{ section.id }}">
+            {%- render 'price', product: product, use_variant: true, show_badges: true, price_class: 'price--large' -%}
+          </div>
+
+          {%- unless product.has_only_default_variant -%}
+            {% render 'product-variant-picker', product: product, product_form_id: 'product-form-' | append: section.id, block: nil %}
+          {%- endunless -%}
+
+          <div class="product__buy">
+            {%- comment -%} Minimal product form for add-to-cart via standard product form {% endcomment -%}
+            {%- assign product_form_id = 'product-form-' | append: section.id -%}
+            {%- form 'product', product, id: product_form_id -%}
+              <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+              <button type="submit" class="button button--primary">{{ 'products.product.add_to_cart' | t }}</button>
+            {%- endform -%}
+          </div>
+
+          {%- if product.description != blank -%}
+            <div class="product__description rte">{{ product.description }}</div>
+          {%- endif -%}
+        </section>
+      </div>
+    </div>
+  </div>
+</product-info>
+
+{% schema %}
+{
+  "name": "Product (render API)",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "base", "label": "Base" },
+        { "value": "inverse", "label": "Inverse" }
+      ],
+      "default": "base"
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "Product (render API)",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}
